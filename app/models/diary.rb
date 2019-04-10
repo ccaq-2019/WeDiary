@@ -3,6 +3,7 @@
 require 'base64'
 require 'rbnacl'
 require 'json'
+require 'date'
 
 module WeDiary
   # Holds a diary
@@ -12,7 +13,7 @@ module WeDiary
     def initialize(new_diary)
       @id = new_diary['id'] || new_id
       @title = new_diary['title']
-      @date = new_diary['date']
+      @date = new_diary['date'] || Date.today.to_s
       @content = new_diary['content']
     end
 
@@ -29,6 +30,10 @@ module WeDiary
         },
         options
       )
+    end
+
+    def self.setup
+      Dir.mkdir(STORE_DIR) unless Dir.exist? STORE_DIR
     end
 
     def save
