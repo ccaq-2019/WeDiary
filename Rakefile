@@ -54,8 +54,8 @@ namespace :db do
 
   desc 'Delete database'
   task :delete do
-    app.DB[:documents].delete
-    app.DB[:projects].delete
+    app.DB[:pdfs].delete
+    app.DB[:users].delete
   end
 
   desc 'Delete dev or test database file'
