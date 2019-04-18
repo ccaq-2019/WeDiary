@@ -5,8 +5,8 @@ require 'json'
 
 require_relative '../models/diary'
 
-module WeDiary
-  # Web controller for WeDiary API
+module CoEditPDF
+  # Web controller for CoEditPDF API
   class Api < Roda
     plugin :environments
     plugin :halt

@@ -5,7 +5,7 @@ require 'rbnacl'
 require 'json'
 require 'date'
 
-module WeDiary
+module CoEditPDF
   # Holds a diary
   class Diary
     STORE_DIR = 'app/db/store/'
