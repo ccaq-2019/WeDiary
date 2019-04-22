@@ -3,12 +3,13 @@
 require 'roda'
 require 'json'
 
+# rubocop:disable Metrics/BlockLength
 module CoEditPDF
   # Web controller for CoEditPDF API
   class Api < Roda
     plugin :halt
 
-    route do |routing| # rubocop:disable Metrics/BlockLength
+    route do |routing|
       response['Content-Type'] = 'application/json'
 
       routing.root do
@@ -21,7 +22,6 @@ module CoEditPDF
           @user_route = "#{@api_root}/users"
 
           routing.on String do |user_id|
-
             routing.on 'pdfs' do
               @pdf_route = "#{@api_root}/users/#{user_id}/pdfs"
 
@@ -38,7 +38,7 @@ module CoEditPDF
                 output = { data: User.first(id: user_id).pdfs }
                 JSON.pretty_generate(output)
               end
-  
+
               # POST api/v1/users/[user_id]/pdfs
               routing.post do
                 new_data = JSON.parse(routing.body.read)
@@ -52,7 +52,7 @@ module CoEditPDF
                 else
                   routing.halt 400, 'Could not save pdf'
                 end
-                  
+
               rescue StandardError
                 routing.halt 500, { message: 'Database error' }.to_json
               end
@@ -92,3 +92,4 @@ module CoEditPDF
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
