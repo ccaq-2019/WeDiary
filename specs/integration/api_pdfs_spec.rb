@@ -62,7 +62,7 @@ describe 'Test PDF Document Handling' do
       pdf = CoEditPDF::Pdf.first
 
       _(created['id']).must_equal pdf.id
-      _(created['filename']).must_equal pdf_data['filename']
+      _(created['filename']).must_equal @pdf_data['filename']
     end
 
     it 'SECURITY: should not create PDF documents with mass assignment' do
