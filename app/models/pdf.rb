@@ -9,6 +9,8 @@ module CoEditPDF
     many_to_one :user
 
     plugin :timestamps
+    plugin :whitelist_security
+    set_allowed_columns :filename
 
     # rubocop:disable MethodLength
     def to_json(options = {})

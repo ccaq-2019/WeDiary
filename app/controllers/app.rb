@@ -44,14 +44,13 @@ module CoEditPDF
                 new_data = JSON.parse(routing.body.read)
                 user = User.first(id: user_id)
                 new_pdf = user.add_pdf(new_data)
+                raise 'Could not save pdf' unless new_pdf
 
-                if new_pdf
-                  response.status = 201
-                  response['Location'] = "#{@pdf_route}/#{new_pdf.id}"
-                  { message: 'PDF saved', data: new_pdf }.to_json
-                else
-                  routing.halt 400, 'Could not save pdf'
-                end
+                response.status = 201
+                response['Location'] = "#{@pdf_route}/#{new_pdf.id}"
+                { message: 'PDF saved', data: new_pdf }.to_json
+              rescue Sequel::MassAssignmentRestriction
+                routing.halt 400, { message: 'Illegal Request' }.to_json
 
               rescue StandardError
                 routing.halt 500, { message: 'Database error' }.to_json
@@ -84,8 +83,10 @@ module CoEditPDF
             response.status = 201
             response['Location'] = "#{@user_route}/#{new_user.id}"
             { message: 'User saved', data: new_user }.to_json
+          rescue Sequel::MassAssignmentRestriction
+            routing.halt 400, { message: 'Illegal Request' }.to_json
           rescue StandardError => error
-            routing.halt 400, { message: error.message }.to_json
+            routing.halt 500, { message: error.message }.to_json
           end
         end
       end
