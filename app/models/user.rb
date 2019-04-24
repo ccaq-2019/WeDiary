@@ -10,6 +10,8 @@ module CoEditPDF
     plugin :association_dependencies, pdfs: :destroy
 
     plugin :timestamps
+    plugin :whitelist_security
+    set_allowed_columns :name, :email
 
     # rubocop:disable MethodLength
     def to_json(options = {})
