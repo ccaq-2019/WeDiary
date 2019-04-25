@@ -37,7 +37,7 @@ end
 
 desc 'Run application console (pry)'
 task :console => :print_env do
-  sh 'pry -r ./specs/test_load_all'
+  sh 'pry -r ./specs/test_load_all -e \'cd CoEditPDF\''
 end
 
 namespace :db do
@@ -72,4 +72,12 @@ namespace :db do
 
   desc 'Delete and migrate again'
   task reset: [:drop, :migrate]
+end
+
+namespace :newkey do
+  desc 'Create sample cryptographic key for database'
+  task :db do
+    require_app('lib')
+    puts "DB_KEY: #{SecureDB.generate_key}"
+  end
 end

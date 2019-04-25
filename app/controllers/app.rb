@@ -30,9 +30,11 @@ module CoEditPDF
 
               # GET api/v1/users/[user_id]/pdfs/[pdf_id]
               routing.get String do |pdf_id|
+                # rubocop:disable Style/UnneededInterpolation
                 pdf = pdfs.call(
-                  :first, find_user_id: user_id.to_i, find_id: pdf_id.to_i
+                  :first, find_user_id: "#{user_id}", find_id: "#{pdf_id}"
                 )
+                # rubocop:enable Style/UnneededInterpolation
                 pdf ? pdf.to_json : raise('PDF not found')
               rescue StandardError => e
                 routing.halt 404, { message: e.message }.to_json
@@ -40,15 +42,20 @@ module CoEditPDF
 
               # GET api/v1/users/[user_id]/pdfs
               routing.get do
-                output =
-                  { data: users.call(:first, find_id: user_id.to_i).pdfs }
+                # rubocop:disable Style/UnneededInterpolation
+                output = {
+                  data: users.call(:first, find_id: "#{user_id}").pdfs
+                }
+                # rubocop:enable Style/UnneededInterpolation
                 JSON.pretty_generate(output)
               end
 
               # POST api/v1/users/[user_id]/pdfs
               routing.post do
                 new_data = JSON.parse(routing.body.read)
-                user = users.call(:first, find_id: user_id.to_i)
+                # rubocop:disable Style/UnneededInterpolation
+                user = users.call(:first, find_id: "#{user_id}")
+                # rubocop:enable Style/UnneededInterpolation
                 new_pdf = user.add_pdf(new_data)
                 raise 'Could not save pdf' unless new_pdf
 
@@ -65,7 +72,9 @@ module CoEditPDF
 
             # GET api/v1/users/[user_id]
             routing.get do
-              user = users.call(:first, find_id: user_id.to_i)
+              # rubocop:disable Style/UnneededInterpolation
+              user = users.call(:first, find_id: "#{user_id}")
+              # rubocop:enable Style/UnneededInterpolation
               user ? user.to_json : raise('User not found')
             rescue StandardError => error
               routing.halt 404, { message: error.message }.to_json

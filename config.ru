@@ -3,4 +3,4 @@
 require './require_app'
 require_app
 
-run WeDiary::Api.freeze.app
+run CoEditPDF::Api.freeze.app

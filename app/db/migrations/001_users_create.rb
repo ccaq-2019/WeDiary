@@ -5,10 +5,10 @@ require 'sequel'
 Sequel.migration do
   change do
     create_table(:users) do
-      primary_key :id
+      uuid :id, primary_key: true
 
       String :name, null: false
-      String :email, unique: true
+      String :email_secure, unique: true
 
       DateTime :created_at
       DateTime :updated_at
