@@ -8,9 +8,19 @@ module CoEditPDF
   class Pdf < Sequel::Model
     many_to_one :user
 
+    plugin :uuid, field: :id
     plugin :timestamps
     plugin :whitelist_security
     set_allowed_columns :filename
+
+    # Secure getters and setters
+    def filename
+      SecureDB.decrypt(filename_secure)
+    end
+
+    def filename=(plaintext)
+      self.filename_secure = SecureDB.encrypt(plaintext)
+    end
 
     # rubocop:disable MethodLength
     def to_json(options = {})

@@ -9,9 +9,19 @@ module CoEditPDF
     one_to_many :pdfs
     plugin :association_dependencies, pdfs: :destroy
 
+    plugin :uuid, field: :id
     plugin :timestamps
     plugin :whitelist_security
     set_allowed_columns :name, :email
+
+    # Secure getters and setters
+    def email
+      SecureDB.decrypt(email_secure)
+    end
+
+    def email=(plaintext)
+      self.email_secure = SecureDB.encrypt(plaintext)
+    end
 
     # rubocop:disable MethodLength
     def to_json(options = {})
