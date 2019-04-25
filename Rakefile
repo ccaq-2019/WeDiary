@@ -37,7 +37,7 @@ end
 
 desc 'Run application console (pry)'
 task :console => :print_env do
-  sh 'pry -r ./specs/test_load_all'
+  sh 'pry -r ./specs/test_load_all -e \'cd CoEditPDF\''
 end
 
 namespace :db do
