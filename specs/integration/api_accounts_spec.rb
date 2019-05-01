@@ -69,6 +69,8 @@ describe 'Test Account Handling' do
       _(created['id']).must_equal account.id
       _(created['name']).must_equal @account_data['name']
       _(created['email']).must_equal @account_data['email']
+      _(account.password?(@account_data['password'])).must_equal true
+      _(account.password?('not_really_the_password')).must_equal false
     end
 
     it 'SECURITY: should not create account with mass assignment' do
