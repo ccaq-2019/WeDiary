@@ -6,7 +6,7 @@ require 'sequel'
 module CoEditPDF
   # Holds PDF Data
   class Pdf < Sequel::Model
-    many_to_one :user
+    many_to_one :owner, class: :'CoEditPDF::Account'
 
     plugin :uuid, field: :id
     plugin :timestamps
@@ -34,7 +34,7 @@ module CoEditPDF
             }
           },
           included: {
-            user: user
+            owner: owner
           }
         }, options
       )

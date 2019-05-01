@@ -8,18 +8,18 @@ describe 'Test PDF Document Handling' do
   before do
     wipe_database
 
-    DATA[:users].each do |user_data|
-      CoEditPDF::User.create(user_data)
+    DATA[:accounts].each do |account_data|
+      CoEditPDF::Account.create(account_data)
     end
   end
 
   it 'HAPPY: should be able to get list of all PDF documents' do
-    user = CoEditPDF::User.first
+    account = CoEditPDF::Account.first
     DATA[:pdfs].each do |pdf|
-      user.add_pdf(pdf)
+      account.add_owned_pdf(pdf)
     end
 
-    get "api/v1/users/#{user.id}/pdfs"
+    get "api/v1/accounts/#{account.id}/pdfs"
     _(last_response.status).must_equal 200
 
     result = JSON.parse last_response.body
@@ -28,10 +28,10 @@ describe 'Test PDF Document Handling' do
 
   it 'HAPPY: should be able to get details of a single pdf' do
     pdf_data = DATA[:pdfs][1]
-    user = CoEditPDF::User.first
-    pdf = user.add_pdf(pdf_data)
+    account = CoEditPDF::Account.first
+    pdf = account.add_owned_pdf(pdf_data)
 
-    get "/api/v1/users/#{user.id}/pdfs/#{pdf.id}"
+    get "/api/v1/accounts/#{account.id}/pdfs/#{pdf.id}"
     _(last_response.status).must_equal 200
 
     result = JSON.parse last_response.body
@@ -40,21 +40,21 @@ describe 'Test PDF Document Handling' do
   end
 
   it 'SAD: should return error if unknown pdf requested' do
-    user = CoEditPDF::User.first
-    get "/api/v1/users/#{user.id}/pdfs/foobar"
+    account = CoEditPDF::Account.first
+    get "/api/v1/accounts/#{account.id}/pdfs/foobar"
 
     _(last_response.status).must_equal 404
   end
 
   describe 'Creating PDF Documents' do
     before do
-      @user = CoEditPDF::User.first
+      @account = CoEditPDF::Account.first
       @pdf_data = DATA[:pdfs][1]
       @req_header = { 'CONTENT_TYPE' => 'application/json' }
     end
 
     it 'HAPPY: should be able to create new pdfs' do
-      post "api/v1/users/#{@user.id}/pdfs", @pdf_data.to_json, @req_header
+      post "api/v1/accounts/#{@account.id}/pdfs", @pdf_data.to_json, @req_header
       _(last_response.status).must_equal 201
       _(last_response.header['Location'].size).must_be :>, 0
 
@@ -68,7 +68,7 @@ describe 'Test PDF Document Handling' do
     it 'SECURITY: should not create PDF documents with mass assignment' do
       bad_data = @pdf_data.clone
       bad_data['created_at'] = '1900-01-01'
-      post "api/v1/users/#{@user.id}/pdfs", bad_data.to_json, @req_header
+      post "api/v1/accounts/#{@account.id}/pdfs", bad_data.to_json, @req_header
 
       _(last_response.status).must_equal 400
       _(last_response.header['Location']).must_be_nil

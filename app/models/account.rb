@@ -5,12 +5,12 @@ require 'sequel'
 
 module CoEditPDF
   # Holds User Data
-  class User < Sequel::Model
-    one_to_many :pdfs
-    plugin :association_dependencies, pdfs: :destroy
+  class Account < Sequel::Model
+    one_to_many :owned_pdfs, class: :'CoEditPDF::Pdf', key: :owner_id
+    plugin :association_dependencies, owned_pdfs: :destroy
 
     plugin :uuid, field: :id
-    plugin :timestamps
+    plugin :timestamps, update_on_create: true
     plugin :whitelist_security
     set_allowed_columns :name, :email
 

@@ -6,7 +6,7 @@ Sequel.migration do
   change do
     create_table(:pdfs) do
       uuid :id, primary_key: true
-      foreign_key :user_id, table: :users, null: false, type: :uuid
+      foreign_key :owner_id, table: :accounts, null: false, type: :uuid
 
       String :filename_secure, null: false
 
