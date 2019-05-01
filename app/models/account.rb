@@ -2,6 +2,7 @@
 
 require 'json'
 require 'sequel'
+require_relative './password'
 
 module CoEditPDF
   # Holds User Data
@@ -12,9 +13,18 @@ module CoEditPDF
     plugin :uuid, field: :id
     plugin :timestamps, update_on_create: true
     plugin :whitelist_security
-    set_allowed_columns :name, :email
+    set_allowed_columns :name, :email, :password
 
     # Secure getters and setters
+    def password=(new_password)
+      self.password_digest = Password.digest(new_password)
+    end
+
+    def password?(try_password)
+      digest = CoEditPDF::Password.from_digest(password_digest)
+      digest.correct?(try_password)
+    end
+
     def email
       SecureDB.decrypt(email_secure)
     end
