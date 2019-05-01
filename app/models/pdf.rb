@@ -8,6 +8,11 @@ module CoEditPDF
   class Pdf < Sequel::Model
     many_to_one :owner, class: :'CoEditPDF::Account'
 
+    many_to_many :collaborators,
+                 class: :'CoEditPDF::Account',
+                 join_table: :accounts_pdfs,
+                 left_key: :pdf_id, right_key: :collaborator_id
+
     plugin :uuid, field: :id
     plugin :timestamps
     plugin :whitelist_security
