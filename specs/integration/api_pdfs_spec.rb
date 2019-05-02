@@ -16,7 +16,9 @@ describe 'Test PDF Document Handling' do
   it 'HAPPY: should be able to get list of all PDF documents' do
     account = CoEditPDF::Account.first
     DATA[:pdfs].each do |pdf|
-      account.add_owned_pdf(pdf)
+      CoEditPDF::CreatePdfForOwner.call(
+        owner_id: account.id, pdf_data: pdf
+      )
     end
 
     get "api/v1/accounts/#{account.id}/pdfs"
@@ -29,7 +31,9 @@ describe 'Test PDF Document Handling' do
   it 'HAPPY: should be able to get details of a single pdf' do
     pdf_data = DATA[:pdfs][1]
     account = CoEditPDF::Account.first
-    pdf = account.add_owned_pdf(pdf_data)
+    pdf = CoEditPDF::CreatePdfForOwner.call(
+      owner_id: account.id, pdf_data: pdf_data
+    )
 
     get "/api/v1/accounts/#{account.id}/pdfs/#{pdf.id}"
     _(last_response.status).must_equal 200

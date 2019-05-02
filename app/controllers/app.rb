@@ -53,10 +53,9 @@ module CoEditPDF
               # POST api/v1/accounts/[owner_id]/pdfs
               routing.post do
                 new_data = JSON.parse(routing.body.read)
-                # rubocop:disable Style/UnneededInterpolation
-                account = accounts.call(:first, find_id: "#{owner_id}")
-                # rubocop:enable Style/UnneededInterpolation
-                new_pdf = account.add_owned_pdf(new_data)
+                new_pdf = CreatePdfForOwner.call(
+                  owner_id: owner_id, pdf_data: new_data
+                )
                 raise 'Could not save pdf' unless new_pdf
 
                 response.status = 201

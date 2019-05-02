@@ -31,8 +31,12 @@ describe 'Test Account Handling' do
 
       result = JSON.parse last_response.body
       _(result['data']['attributes']['id']).must_equal id
-      _(result['data']['attributes']['name']).must_equal existing_account['name']
-      _(result['data']['attributes']['email']).must_equal existing_account['email']
+      _(result['data']['attributes']['name']).must_equal(
+        existing_account['name']
+      )
+      _(result['data']['attributes']['email']).must_equal(
+        existing_account['email']
+      )
     end
 
     it 'SAD: should return error if unknown account requested' do
@@ -42,8 +46,12 @@ describe 'Test Account Handling' do
     end
 
     it 'SECURITY: should prevent basic SQL injection targeting IDs' do
-      CoEditPDF::Account.create(name: 'New Account', email: 'account1@mail.com')
-      CoEditPDF::Account.create(name: 'Newer Account', email: 'account2@mail.com')
+      CoEditPDF::Account.create(
+        name: 'New Account', email: 'account1@mail.com'
+      )
+      CoEditPDF::Account.create(
+        name: 'Newer Account', email: 'account2@mail.com'
+      )
       get 'api/v1/accounts/2%20or%20id%3E0' # 2 or id > 0
 
       # deliberately not reporting error -- don't give attacker information
