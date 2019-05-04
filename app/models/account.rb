@@ -38,21 +38,15 @@ module CoEditPDF
       self.email_secure = SecureDB.encrypt(plaintext)
     end
 
-    # rubocop:disable MethodLength
     def to_json(options = {})
       JSON(
         {
-          data: {
-            type: 'user',
-            attributes: {
-              id: id,
-              name: name,
-              email: email
-            }
-          }
+          type: 'user',
+          id: id,
+          name: name,
+          email: email
         }, options
       )
     end
-    # rubocop:enable MethodLength
   end
 end

@@ -9,7 +9,7 @@ module CoEditPDF
 
     def self.call(collaborator_id:, pdf_id:)
       collaborator = @accounts.call(:first, find_id: "#{collaborator_id}")
-      pdf = @pdfs.call(:first, finid_id: "#{pdf_id}")
+      pdf = @pdfs.call(:first, find_id: "#{pdf_id}")
       return false if pdf.owner.id == collaborator.id
 
       pdf.add_collaborator(collaborator)

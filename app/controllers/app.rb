@@ -80,14 +80,6 @@ module CoEditPDF
             end
           end
 
-          # GET api/v1/accounts
-          routing.get do
-            output = { data: Account.all }
-            JSON.pretty_generate(output)
-          rescue StandardError
-            routing.halt 404, { message: 'Could not find accounts' }.to_json
-          end
-
           # POST api/v1/accounts
           routing.post do
             new_data = JSON.parse(routing.body.read)

@@ -9,34 +9,21 @@ describe 'Test Account Handling' do
     wipe_database
   end
 
-  describe 'Getting accounts' do
-    it 'HAPPY: should be able to get list of all accounts' do
-      CoEditPDF::Account.create(DATA[:accounts][0])
-      CoEditPDF::Account.create(DATA[:accounts][1])
-
-      get 'api/v1/accounts'
-      _(last_response.status).must_equal 200
-
-      result = JSON.parse last_response.body
-      _(result['data'].count).must_equal 2
-    end
-
+  describe 'Getting account information' do
     it 'HAPPY: should be able to get details of a single account' do
-      existing_account = DATA[:accounts][1]
-      CoEditPDF::Account.create(existing_account)
-      id = CoEditPDF::Account.first.id
+      account_data = DATA[:accounts][1]
+      account = CoEditPDF::Account.create(account_data)
 
-      get "/api/v1/accounts/#{id}"
+      get "/api/v1/accounts/#{account.id}"
       _(last_response.status).must_equal 200
 
       result = JSON.parse last_response.body
-      _(result['data']['attributes']['id']).must_equal id
-      _(result['data']['attributes']['name']).must_equal(
-        existing_account['name']
-      )
-      _(result['data']['attributes']['email']).must_equal(
-        existing_account['email']
-      )
+      _(result['id']).must_equal account.id
+      _(result['name']).must_equal account.name
+      _(result['email']).must_equal account.email
+      _(result['salt']).must_be_nil
+      _(result['password']).must_be_nil
+      _(result['password_hash']).must_be_nil
     end
 
     it 'SAD: should return error if unknown account requested' do
@@ -56,7 +43,7 @@ describe 'Test Account Handling' do
 
       # deliberately not reporting error -- don't give attacker information
       _(last_response.status).must_equal 404
-      _(last_response.body['data']).must_be_nil
+      _(last_response.body['id']).must_be_nil
     end
   end
 
@@ -71,7 +58,7 @@ describe 'Test Account Handling' do
       _(last_response.status).must_equal 201
       _(last_response.header['Location'].size).must_be :>, 0
 
-      created = JSON.parse(last_response.body)['data']['data']['attributes']
+      created = JSON.parse(last_response.body)['data']
       account = CoEditPDF::Account.first
 
       _(created['id']).must_equal account.id
