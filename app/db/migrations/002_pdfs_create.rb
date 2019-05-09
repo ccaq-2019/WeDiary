@@ -9,6 +9,7 @@ Sequel.migration do
       foreign_key :owner_id, table: :accounts, null: false, type: :uuid
 
       String :filename_secure, null: false
+      String :filename_digest, null: false
 
       DateTime :created_at
       DateTime :updated_at

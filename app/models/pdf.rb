@@ -6,6 +6,30 @@ require 'sequel'
 module CoEditPDF
   # Holds PDF Data
   class Pdf < Sequel::Model
+    dataset_module do
+      def where(inputs)
+        if inputs.is_a?(Hash)
+          if inputs.key?(:filename)
+            inputs[:filename_digest] = inputs.delete :filename
+            inputs[:filename_digest] = SecureDB.digest(inputs[:filename_digest])
+          end
+        end
+        super(inputs)
+      end
+
+      def first(*args)
+        inputs = args[0]
+        unless inputs.nil?
+          if inputs.key?(:filename)
+            inputs[:filename_digest] = inputs.delete :filename
+            inputs[:filename_digest] = SecureDB.digest(inputs[:filename_digest])
+          end
+          args[0] = inputs
+        end
+        super(*args)
+      end
+    end
+
     many_to_one :owner, class: :'CoEditPDF::Account'
 
     many_to_many :collaborators,
@@ -25,6 +49,7 @@ module CoEditPDF
 
     def filename=(plaintext)
       self.filename_secure = SecureDB.encrypt(plaintext)
+      self.filename_digest = SecureDB.digest(plaintext)
     end
 
     # rubocop:disable MethodLength

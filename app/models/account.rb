@@ -7,6 +7,30 @@ require_relative './password'
 module CoEditPDF
   # Holds User Data
   class Account < Sequel::Model
+    dataset_module do
+      def where(inputs)
+        if inputs.is_a?(Hash)
+          if inputs.key?(:email)
+            inputs[:email_digest] = inputs.delete :email
+            inputs[:email_digest] = SecureDB.digest(inputs[:email_digest])
+          end
+        end
+        super(inputs)
+      end
+
+      def first(*args)
+        inputs = args[0]
+        unless inputs.nil?
+          if inputs.key?(:email)
+            inputs[:email_digest] = inputs.delete :email
+            inputs[:email_digest] = SecureDB.digest(inputs[:email_digest])
+          end
+          args[0] = inputs
+        end
+        super(*args)
+      end
+    end
+
     one_to_many :owned_pdfs, class: :'CoEditPDF::Pdf', key: :owner_id
     plugin :association_dependencies, owned_pdfs: :destroy
 
@@ -36,6 +60,7 @@ module CoEditPDF
 
     def email=(plaintext)
       self.email_secure = SecureDB.encrypt(plaintext)
+      self.email_digest = SecureDB.digest(plaintext)
     end
 
     def to_json(options = {})
