@@ -56,14 +56,12 @@ module CoEditPDF
     def to_json(options = {})
       JSON(
         {
-          data: {
-            type: 'pdf',
-            attributes: {
-              id: id,
-              filename: filename
-            }
+          type: 'pdf',
+          attributes: {
+            id: id,
+            filename: filename
           },
-          included: {
+          include: {
             owner: owner
           }
         }, options

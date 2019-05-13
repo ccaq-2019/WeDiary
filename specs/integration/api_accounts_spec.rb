@@ -6,6 +6,7 @@ describe 'Test Account Handling' do
   include Rack::Test::Methods
 
   before do
+    @req_header = { 'CONTENT_TYPE' => 'application/json' }
     wipe_database
   end
 
@@ -18,12 +19,13 @@ describe 'Test Account Handling' do
       _(last_response.status).must_equal 200
 
       result = JSON.parse last_response.body
-      _(result['id']).must_equal account.id
-      _(result['name']).must_equal account.name
-      _(result['email']).must_equal account.email
-      _(result['salt']).must_be_nil
-      _(result['password']).must_be_nil
-      _(result['password_hash']).must_be_nil
+
+      _(result['attributes']['id']).must_equal account.id
+      _(result['attributes']['name']).must_equal account.name
+      _(result['attributes']['email']).must_equal account.email
+      _(result['attributes']['salt']).must_be_nil
+      _(result['attributes']['password']).must_be_nil
+      _(result['attributes']['password_hash']).must_be_nil
     end
 
     it 'SAD: should return error if unknown account requested' do
@@ -50,7 +52,6 @@ describe 'Test Account Handling' do
   describe 'Creating New Accounts' do
     before do
       @account_data = DATA[:accounts][1]
-      @req_header = { 'CONTENT_TYPE' => 'application/json' }
     end
 
     it 'HAPPY: should be able to create new accounts' do
@@ -58,7 +59,7 @@ describe 'Test Account Handling' do
       _(last_response.status).must_equal 201
       _(last_response.header['Location'].size).must_be :>, 0
 
-      created = JSON.parse(last_response.body)['data']
+      created = JSON.parse(last_response.body)['data']['attributes']
       account = CoEditPDF::Account.first
 
       _(created['id']).must_equal account.id
