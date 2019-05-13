@@ -9,8 +9,8 @@ module CoEditPDF
   class Api < Roda
     plugin :halt
 
-    users = User.where(id: :$find_id)
-    pdfs = Pdf.where(user_id: :$find_user_id, id: :$find_id)
+    accounts = Account.where(id: :$find_id)
+    pdfs = Pdf.where(owner_id: :$find_owner_id, id: :$find_id)
 
     route do |routing|
       response['Content-Type'] = 'application/json'
@@ -21,18 +21,18 @@ module CoEditPDF
 
       @api_root = 'api/v1'
       routing.on @api_root do
-        routing.on 'users' do
-          @user_route = "#{@api_root}/users"
+        routing.on 'accounts' do
+          @account_route = "#{@api_root}/accounts"
 
-          routing.on String do |user_id|
+          routing.on String do |owner_id|
             routing.on 'pdfs' do
-              @pdf_route = "#{@api_root}/users/#{user_id}/pdfs"
+              @pdf_route = "#{@api_root}/accounts/#{owner_id}/pdfs"
 
-              # GET api/v1/users/[user_id]/pdfs/[pdf_id]
+              # GET api/v1/accounts/[owner_id]/pdfs/[pdf_id]
               routing.get String do |pdf_id|
                 # rubocop:disable Style/UnneededInterpolation
                 pdf = pdfs.call(
-                  :first, find_user_id: "#{user_id}", find_id: "#{pdf_id}"
+                  :first, find_owner_id: "#{owner_id}", find_id: "#{pdf_id}"
                 )
                 # rubocop:enable Style/UnneededInterpolation
                 pdf ? pdf.to_json : raise('PDF not found')
@@ -40,23 +40,22 @@ module CoEditPDF
                 routing.halt 404, { message: e.message }.to_json
               end
 
-              # GET api/v1/users/[user_id]/pdfs
+              # GET api/v1/accounts/[owner_id]/pdfs
               routing.get do
                 # rubocop:disable Style/UnneededInterpolation
                 output = {
-                  data: users.call(:first, find_id: "#{user_id}").pdfs
+                  data: accounts.call(:first, find_id: "#{owner_id}").owned_pdfs
                 }
                 # rubocop:enable Style/UnneededInterpolation
                 JSON.pretty_generate(output)
               end
 
-              # POST api/v1/users/[user_id]/pdfs
+              # POST api/v1/accounts/[owner_id]/pdfs
               routing.post do
                 new_data = JSON.parse(routing.body.read)
-                # rubocop:disable Style/UnneededInterpolation
-                user = users.call(:first, find_id: "#{user_id}")
-                # rubocop:enable Style/UnneededInterpolation
-                new_pdf = user.add_pdf(new_data)
+                new_pdf = CreatePdfForOwner.call(
+                  owner_id: owner_id, pdf_data: new_data
+                )
                 raise 'Could not save pdf' unless new_pdf
 
                 response.status = 201
@@ -70,34 +69,26 @@ module CoEditPDF
               end
             end
 
-            # GET api/v1/users/[user_id]
+            # GET api/v1/accounts/[owner_id]
             routing.get do
               # rubocop:disable Style/UnneededInterpolation
-              user = users.call(:first, find_id: "#{user_id}")
+              account = accounts.call(:first, find_id: "#{owner_id}")
               # rubocop:enable Style/UnneededInterpolation
-              user ? user.to_json : raise('User not found')
+              account ? account.to_json : raise('Account not found')
             rescue StandardError => error
               routing.halt 404, { message: error.message }.to_json
             end
           end
 
-          # GET api/v1/users
-          routing.get do
-            output = { data: User.all }
-            JSON.pretty_generate(output)
-          rescue StandardError
-            routing.halt 404, { message: 'Could not find users' }.to_json
-          end
-
-          # POST api/v1/users
+          # POST api/v1/accounts
           routing.post do
             new_data = JSON.parse(routing.body.read)
-            new_user = User.create(new_data)
-            raise('Could not save user') unless new_user
+            new_account = Account.create(new_data)
+            raise('Could not save account') unless new_account
 
             response.status = 201
-            response['Location'] = "#{@user_route}/#{new_user.id}"
-            { message: 'User saved', data: new_user }.to_json
+            response['Location'] = "#{@account_route}/#{new_account.id}"
+            { message: 'Account saved', data: new_account }.to_json
           rescue Sequel::MassAssignmentRestriction
             routing.halt 400, { message: 'Illegal Request' }.to_json
           rescue StandardError => error

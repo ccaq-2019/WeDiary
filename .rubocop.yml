@@ -9,6 +9,7 @@ Metrics/BlockLength:
   Enabled: true
   Exclude:
     - specs/**/*
+    - Rakefile
 
 Security/YAMLLoad:
   Enabled: true

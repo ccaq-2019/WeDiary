@@ -1,0 +1,10 @@
+---
+- name: Lisa
+  email: lisa@mail.com
+  password: asfdkf
+- name: Ricky
+  email: ricky@mail.com
+  password: dfgdfg
+- name: Shohei
+  email: angel18@mlb.com
+  password: two-way

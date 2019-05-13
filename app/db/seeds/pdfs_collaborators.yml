@@ -1,0 +1,8 @@
+---
+  - pdf_name: hello.pdf
+    collaborator_email:
+      - ricky@mail.com
+      - angel18@mlb.com
+  - pdf_name: tensorflow.pdf
+    collaborator_email:
+      - angel18@mlb.com
