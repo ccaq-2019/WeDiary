@@ -53,6 +53,14 @@ namespace :newkey do
   end
 end
 
+namespace :newsalt do
+  desc 'Create sample cryptographic salt for database'
+  task :db do
+    require_app('lib')
+    puts "DB_SALT: #{SecureDB.generate_salt}"
+  end
+end
+
 namespace :db do
   require_app(nil) # loads config code files only
   require 'sequel'
@@ -105,7 +113,7 @@ namespace :db do
 end
 
 namespace :run do
-  # Run in development mode
+  desc 'Run in development mode'
   task :dev do
     sh 'rackup -p 3000'
   end
