@@ -32,12 +32,15 @@ module CoEditPDF
     end
 
     one_to_many :owned_pdfs, class: :'CoEditPDF::Pdf', key: :owner_id
-    plugin :association_dependencies, owned_pdfs: :destroy
 
     many_to_many :collaborations,
                  class: :'CoEditPDF::Pdf',
                  join_table: :accounts_pdfs,
                  left_key: :collaborator_id, right_key: :pdf_id
+
+    plugin :association_dependencies,
+           owned_pdfs: :destroy,
+           collaborations: :nullify
 
     plugin :uuid, field: :id
     plugin :timestamps, update_on_create: true

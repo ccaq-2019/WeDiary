@@ -9,8 +9,8 @@ require 'yaml'
 require_relative 'test_load_all'
 
 def wipe_database
-  app.DB[:pdfs].delete
-  app.DB[:accounts].delete
+  CoEditPDF::Pdf.map(&:destroy)
+  CoEditPDF::Account.map(&:destroy)
 end
 
 DATA = {} # rubocop:disable Style/MutableConstant

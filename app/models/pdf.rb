@@ -37,6 +37,9 @@ module CoEditPDF
                  join_table: :accounts_pdfs,
                  left_key: :pdf_id, right_key: :collaborator_id
 
+    plugin :association_dependencies,
+           collaborators: :nullify
+
     plugin :uuid, field: :id
     plugin :timestamps
     plugin :whitelist_security
