@@ -39,8 +39,8 @@ describe 'Test PDF Document Handling' do
     _(last_response.status).must_equal 200
 
     result = JSON.parse last_response.body
-    _(result['data']['attributes']['id']).must_equal pdf.id
-    _(result['data']['attributes']['filename']).must_equal pdf_data['filename']
+    _(result['attributes']['id']).must_equal pdf.id
+    _(result['attributes']['filename']).must_equal pdf_data['filename']
   end
 
   it 'SAD: should return error if unknown pdf requested' do
@@ -62,7 +62,7 @@ describe 'Test PDF Document Handling' do
       _(last_response.status).must_equal 201
       _(last_response.header['Location'].size).must_be :>, 0
 
-      created = JSON.parse(last_response.body)['data']['data']['attributes']
+      created = JSON.parse(last_response.body)['data']['attributes']
       pdf = CoEditPDF::Pdf.first
 
       _(created['id']).must_equal pdf.id

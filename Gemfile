@@ -28,19 +28,21 @@ end
 gem 'bundler-audit'
 gem 'rbnacl', '~>6.0'
 
-# Performance
-gem 'rubocop-performance'
-
 # Testing
 group :test do
   gem 'minitest'
   gem 'minitest-rg'
-  gem 'rack-test'
 end
 
 # Development
 group :development do
   gem 'rubocop'
+  gem 'rubocop-performance'
+end
+
+group :development, :test do
+  gem 'rack-test'
+  gem 'rerun'
 end
 
 # For VSCode

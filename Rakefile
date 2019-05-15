@@ -16,6 +16,11 @@ Rake::TestTask.new(:spec) do |t|
   t.warning = false
 end
 
+desc 'Rerun tests on live code changes'
+task :respec do
+  sh 'rerun -c rake spec'
+end
+
 desc 'Runs rubocop on tested code'
 task :style do
   sh 'rubocop .'
@@ -38,6 +43,22 @@ end
 desc 'Run application console (pry)'
 task :console => :print_env do
   sh 'pry -r ./specs/test_load_all -e \'cd CoEditPDF\''
+end
+
+namespace :newkey do
+  desc 'Create sample cryptographic key for database'
+  task :db do
+    require_app('lib')
+    puts "DB_KEY: #{SecureDB.generate_key}"
+  end
+end
+
+namespace :newsalt do
+  desc 'Create sample cryptographic salt for database'
+  task :db do
+    require_app('lib')
+    puts "DB_SALT: #{SecureDB.generate_salt}"
+  end
 end
 
 namespace :db do
@@ -91,10 +112,9 @@ namespace :db do
   task reseed: [:reset_seeds, :seed]
 end
 
-namespace :newkey do
-  desc 'Create sample cryptographic key for database'
-  task :db do
-    require_app('lib')
-    puts "DB_KEY: #{SecureDB.generate_key}"
+namespace :run do
+  desc 'Run in development mode'
+  task :dev do
+    sh 'rackup -p 3000'
   end
 end

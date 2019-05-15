@@ -66,10 +66,12 @@ module CoEditPDF
     def to_json(options = {})
       JSON(
         {
-          type: 'user',
-          id: id,
-          name: name,
-          email: email
+          type: 'account',
+          attributes: {
+            id: id,
+            name: name,
+            email: email
+          }
         }, options
       )
     end
