@@ -80,8 +80,9 @@ module CoEditPDF
         { message: 'Account saved', data: new_account }.to_json
       rescue Sequel::MassAssignmentRestriction
         routing.halt 400, { message: 'Illegal Request' }.to_json
-      rescue StandardError => error
-        routing.halt 500, { message: error.message }.to_json
+      rescue StandardError => e
+        puts e.inspect
+        routing.halt 500, { message: e.message }.to_json
       end
     end
   end
