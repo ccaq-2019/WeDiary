@@ -17,7 +17,7 @@ describe 'Test Pdfs Handling' do
     pdf_data = DATA[:pdfs][1]
     account = CoEditPDF::Account.first
     new_pdf = CoEditPDF::CreatePdfForOwner.call(
-      owner_id: account.id, pdf_data: pdf_data
+      owner_name: account.name, pdf_data: pdf_data
     )
 
     pdf = CoEditPDF::Pdf.find(id: new_pdf.id)
@@ -28,7 +28,7 @@ describe 'Test Pdfs Handling' do
     pdf_data = DATA[:pdfs][1]
     account = CoEditPDF::Account.first
     new_pdf = CoEditPDF::CreatePdfForOwner.call(
-      owner_id: account.id, pdf_data: pdf_data
+      owner_name: account.name, pdf_data: pdf_data
     )
 
     _(new_pdf.id).wont_be_instance_of Integer
@@ -39,7 +39,7 @@ describe 'Test Pdfs Handling' do
     pdf_data = DATA[:pdfs][1]
     account = CoEditPDF::Account.first
     new_pdf = CoEditPDF::CreatePdfForOwner.call(
-      owner_id: account.id, pdf_data: pdf_data
+      owner_name: account.name, pdf_data: pdf_data
     )
     stored_pdf = app.DB[:pdfs].first
 
