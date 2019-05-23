@@ -2,7 +2,7 @@
 
 require 'roda'
 require 'econfig'
-require './app/lib/secure_db'
+require_app('lib')
 
 module CoEditPDF
   # Configuration for the API
@@ -38,7 +38,8 @@ module CoEditPDF
         DB
       end
 
-      SecureDB.setup(config)
+      SecureDB.setup(config.DB_KEY, config.DB_SALT)
+      AuthToken.setup(config.MSG_KEY)
     end
   end
 end
