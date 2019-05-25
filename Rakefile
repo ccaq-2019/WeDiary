@@ -45,19 +45,23 @@ task :console => :print_env do
   sh 'pry -r ./specs/test_load_all -e \'cd CoEditPDF\''
 end
 
-namespace :newkey do
+namespace :generate do
   desc 'Create sample cryptographic key for database'
-  task :db do
+  task :db_key do
     require_app('lib')
     puts "DB_KEY: #{SecureDB.generate_key}"
   end
-end
 
-namespace :newsalt do
   desc 'Create sample cryptographic salt for database'
-  task :db do
+  task :db_salt do
     require_app('lib')
     puts "DB_SALT: #{SecureDB.generate_salt}"
+  end
+
+  desc 'Create sample cryptographic key for tokens and messaging'
+  task :msg_key do
+    require_app('lib')
+    puts "MSG_KEY: #{AuthToken.generate_key}"
   end
 end
 

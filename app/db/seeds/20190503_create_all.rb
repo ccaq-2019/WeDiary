@@ -28,7 +28,7 @@ def create_owned_pdfs
     owner['pdf_name'].each do |pdf_name|
       pdf_data = PDF_INFO.find { |pdf| pdf['filename'] == pdf_name }
       CoEditPDF::CreatePdfForOwner.call(
-        owner_id: account.id, pdf_data: pdf_data
+        owner_name: account.name, pdf_data: pdf_data
       )
     end
   end

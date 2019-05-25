@@ -4,6 +4,9 @@ require:
 
 AllCops:
   TargetRubyVersion: 2.6
+
+# Layout/EndOfLine:
+#   Enabled: false
   
 Metrics/BlockLength:
   Enabled: true
