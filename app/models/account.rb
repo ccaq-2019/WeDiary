@@ -47,6 +47,11 @@ module CoEditPDF
     plugin :whitelist_security
     set_allowed_columns :name, :email, :password
 
+    def self.create_github_account(github_account)
+      create(name: github_account[:username],
+             email: github_account[:email])
+    end
+
     # Secure getters and setters
     def password=(new_password)
       self.password_digest = Password.digest(new_password)

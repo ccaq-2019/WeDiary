@@ -16,3 +16,10 @@ end
 DATA = {} # rubocop:disable Style/MutableConstant
 DATA[:accounts] = YAML.safe_load File.read('app/db/seeds/accounts_seed.yml')
 DATA[:pdfs] = YAML.safe_load File.read('app/db/seeds/pdfs_seed.yml')
+
+## SSO fixtures
+GH_ACCOUNT_RESPONSE = YAML.load(
+  File.read('specs/fixtures/github_token_response.yml')
+)
+GOOD_GH_ACCESS_TOKEN = GH_ACCOUNT_RESPONSE.keys.first
+SSO_ACCOUNT = YAML.load(File.read('specs/fixtures/sso_account.yml'))
