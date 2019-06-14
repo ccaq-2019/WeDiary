@@ -80,12 +80,8 @@ module CoEditPDF
         new_pdf = CreatePdfForOwner.call(
           owner_name: @auth_account['name'],
           pdf_data: { filename: new_data['filename'],
-                      content: new_data['file_read'] }
+                      content: new_data['content'] }
         )
-
-        # File.open("./#{new_data['filename']}", 'wb') do |f|
-        #   f.write(Base64.strict_decode64(new_data['file_read']))
-        # end
 
         raise 'Could not save pdf' unless new_pdf
 
