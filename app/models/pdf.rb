@@ -43,7 +43,7 @@ module CoEditPDF
     plugin :uuid, field: :id
     plugin :timestamps
     plugin :whitelist_security
-    set_allowed_columns :filename
+    set_allowed_columns :filename, :content
 
     # Secure getters and setters
     def filename
