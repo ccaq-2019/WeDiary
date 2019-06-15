@@ -79,8 +79,7 @@ module CoEditPDF
         new_data = JSON.parse(routing.body.read)
         new_pdf = CreatePdfForOwner.call(
           owner_name: @auth_account['name'],
-          pdf_data: { filename: new_data['filename'],
-                      content: new_data['content'] }
+          pdf_data: new_data
         )
 
         raise 'Could not save pdf' unless new_pdf
