@@ -38,9 +38,8 @@ def add_collaborators
   CONTRIB_INFO.each do |contrib|
     pdf = CoEditPDF::Pdf.first(filename: contrib['pdf_name'])
     contrib['collaborator_email'].each do |email|
-      account = CoEditPDF::Account.first(email: email)
       CoEditPDF::AddCollaboratorToPdf.call(
-        collaborator_id: account.id, pdf_id: pdf.id
+        collaborator_email: email, pdf_id: pdf.id
       )
     end
   end

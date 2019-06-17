@@ -55,21 +55,27 @@ module CoEditPDF
       self.filename_digest = SecureDB.digest(plaintext)
     end
 
-    # rubocop:disable MethodLength
-    def to_json(options = {})
-      JSON(
-        {
-          type: 'pdf',
-          attributes: {
-            id: id,
-            filename: filename
-          },
-          include: {
-            owner: owner
-          }
-        }, options
+    def to_h
+      {
+        type: 'pdf',
+        attributes: {
+          id: id,
+          filename: filename
+        }
+      }
+    end
+
+    def full_details
+      to_h.merge(
+        relationhships: {
+          owner: owner,
+          collaborators: collaborators
+        }
       )
     end
-    # rubocop:enable MethodLength
+
+    def to_json(options = {})
+      JSON(to_h, options)
+    end
   end
 end

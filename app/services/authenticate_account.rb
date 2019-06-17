@@ -22,7 +22,7 @@ module CoEditPDF
 
       account_and_token(account)
     rescue StandardError
-      raise(UnauthorizedError, credentials)\
+      raise(UnauthorizedError, credentials)
     end
 
     def self.account_and_token(account)

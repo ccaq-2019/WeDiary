@@ -1,34 +1,74 @@
 # frozen_string_literal: true
 
-require 'roda'
 require_relative './app'
 
 # rubocop:disable Metrics/BlockLength
 module CoEditPDF
   # Web controller for CoEditPDF API
   class Api < Roda
-    accounts = Account.where(name: :$find_name)
-    pdfs = Pdf.where(id: :$find_id)
-
     route('pdfs') do |routing|
-      @pdf_route = "#{@api_root}/pdfs"
+      unauthorized_message = { message: 'Unauthorized Request' }.to_json
+      routing.halt(403, unauthorized_message) unless @auth_account
 
-      # GET api/v1/pdfs/[pdf_id]
-      routing.get String do |pdf_id|
-        # rubocop:disable Style/UnneededInterpolation
-        pdf = pdfs.call(:first, find_id: "#{pdf_id}")
-        # rubocop:enable Style/UnneededInterpolation
-        pdf ? pdf.to_json : raise('PDF not found')
-      rescue StandardError => e
-        routing.halt 404, { message: e.message }.to_json
+      @pdf_route = "#{@api_root}/pdfs"
+      routing.on String do |pdf_id|
+        # GET api/v1/pdfs/[pdf_id]
+        routing.get do
+          pdf = Pdf.first(id: pdf_id)
+          pdf = GetPdfQuery.call(
+            account: @auth_account, pdf: pdf
+          )
+
+          { data: pdf }.to_json
+        rescue GetPdfQuery::ForbiddenError => e
+          routing.halt 403, { message: e.message }.to_json
+        rescue GetPdfQuery::NotFoundError => e
+          routing.halt 404, { message: e.message }.to_json
+        rescue StandardError => e
+          puts "FIND PDF ERROR: #{e.inspect}"
+          routing.halt 500, { message: 'API server error' }.to_json
+        end
+
+        routing.on 'collaborators' do
+          # PUT api/v1/pdfs/[pdf_id]/collaborators
+          routing.put do
+            req_data = JSON.parse(routing.body.read)
+
+            collaborator = AddCollaboratorToPdf.call(
+              collaborator_email: req_data['collaborator_email'],
+              pdf_id: pdf_id
+            )
+
+            { data: collaborator }.to_json
+          rescue AddCollaboratorToPdf::ForbiddenError => e
+            routing.halt 403, { message: e.message }.to_json
+          rescue StandardError
+            routing.halt 500, { message: 'API server error' }.to_json
+          end
+
+          # DELETE api/v1/pdfs/[pdf_id]/collaborators
+          routing.delete do
+            req_data = JSON.parse(routing.body.read)
+            collaborator = RemoveCollaborator.call(
+              collaborator_email: req_data['collaborator_email'],
+              pdf_id: pdf_id
+            )
+
+            { message: "#{collaborator.name} removed from projet",
+              data: collaborator }.to_json
+          rescue RemoveCollaborator::ForbiddenError => e
+            routing.halt 403, { message: e.message }.to_json
+          rescue StandardError
+            routing.halt 500, { message: 'API server error' }.to_json
+          end
+        end
       end
 
       # GET api/v1/pdfs
       routing.get do
-        owned_pdfs = accounts.call(
-          :first, find_name: @auth_account['name']
-        ).owned_pdfs
-        JSON.pretty_generate(data: owned_pdfs)
+        pdfs = PdfPolicy::AccountScope.new(@auth_account).viewable
+
+        JSON.pretty_generate(data: pdfs)
       rescue StandardError
         routing.halt 403,
                      { message: 'Could not find any PDF documents' }.to_json
@@ -37,9 +77,7 @@ module CoEditPDF
       # POST api/v1/pdfs
       routing.post do
         new_data = JSON.parse(routing.body.read)
-        new_pdf = CreatePdfForOwner.call(
-          owner_name: @auth_account['name'], pdf_data: new_data
-        )
+        new_pdf = @auth_account.add_owned_pdf(new_data)
         raise 'Could not save pdf' unless new_pdf
 
         response.status = 201
