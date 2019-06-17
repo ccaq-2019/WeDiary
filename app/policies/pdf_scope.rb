@@ -37,11 +37,15 @@ module CoEditPDF
                                  end
 
         {
-          owned: { pdfs: account.owned_pdfs,
+          owned: { pdfs: get_all_pdfs_detail(account.owned_pdfs),
                    policy: owned_pdf_policy },
-          collaborate: { pdfs: account.collaborations,
+          collaborate: { pdfs: get_all_pdfs_detail(account.collaborations),
                          policy: collaborate_pdf_policy }
         }
+      end
+
+      def get_all_pdfs_detail(pdfs)
+        pdfs.map(&:full_details)
       end
 
       def includes_collaborator?(pdf, account)

@@ -67,7 +67,7 @@ module CoEditPDF
 
     def full_details
       to_h.merge(
-        relationhships: {
+        relationships: {
           owner: owner,
           collaborators: collaborators
         }
