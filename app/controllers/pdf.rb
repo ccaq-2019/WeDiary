@@ -89,7 +89,8 @@ module CoEditPDF
         { message: 'PDF saved', data: new_pdf }.to_json
       rescue Sequel::MassAssignmentRestriction
         routing.halt 400, { message: 'Illegal Request' }.to_json
-      rescue StandardError
+      rescue StandardError => e
+        puts [e.class, e.message].join ': '
         routing.halt 500, { message: 'Database error' }.to_json
       end
     end
