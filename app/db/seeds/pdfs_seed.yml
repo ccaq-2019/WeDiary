@@ -1,7 +1,4 @@
 ---
 - filename: hello.pdf
-  content: hello
 - filename: world.pdf
-  content: wrold
 - filename: tensorflow.pdf
-  content: tensorflow
