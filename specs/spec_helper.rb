@@ -13,6 +13,15 @@ def wipe_database
   CoEditPDF::Account.map(&:destroy)
 end
 
+def auth_header(account_data)
+  auth = CoEditPDF::AuthenticateAccount.call(
+    name: account_data['name'],
+    password: account_data['password']
+  )
+
+  "Bearer #{auth[:attributes][:auth_token]}"
+end
+
 DATA = {} # rubocop:disable Style/MutableConstant
 DATA[:accounts] = YAML.safe_load File.read('app/db/seeds/accounts_seed.yml')
 DATA[:pdfs] = YAML.safe_load File.read('app/db/seeds/pdfs_seed.yml')

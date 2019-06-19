@@ -12,8 +12,10 @@ module CoEditPDF
       return nil unless headers['Authorization']
 
       scheme, auth_token = headers['Authorization'].split(' ')
+      return nil unless scheme.match?(/^Bearer$/i)
+
       account_payload = AuthToken.payload(auth_token)
-      scheme.match?(/^Bearer$/i) ? account_payload['attributes'] : nil
+      Account.first(name: account_payload['attributes']['name'])
     end
   end
 end

@@ -14,6 +14,11 @@ Metrics/BlockLength:
     - specs/**/*
     - Rakefile
 
+Metrics/LineLength:
+  Enabled: true
+  Exclude:
+    - specs/**/*
+
 Security/YAMLLoad:
   Enabled: true
   Exclude:
@@ -29,3 +34,18 @@ Style/SymbolArray:
   Exclude:
     - app/db/migrations/**/*
     - Rakefile
+
+Style/Not:
+  Enabled: true
+  Exclude:
+    - app/policies/**
+
+Style/AndOr:
+  Enabled: true
+  Exclude:
+    - app/policies/**
+
+Metrics/MethodLength:
+  Enabled: true
+  Exclude:
+    - app/policies/**

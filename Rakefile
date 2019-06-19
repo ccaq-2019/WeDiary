@@ -96,7 +96,7 @@ namespace :db do
   end
 
   task :load_models do
-    require_app(%w[lib models services])
+    require_app(%w[lib models policies services])
   end
 
   task :reset_seeds => [:load_models] do

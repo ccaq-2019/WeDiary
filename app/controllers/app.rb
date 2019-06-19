@@ -8,6 +8,7 @@ module CoEditPDF
   # Web controller for CoEditPDF API
   class Api < Roda
     plugin :halt
+    plugin :all_verbs
     plugin :multi_route
     plugin :request_headers
     include SecureRequestHelpers

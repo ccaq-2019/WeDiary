@@ -2,7 +2,7 @@
 
 require_relative '../spec_helper'
 
-describe 'Test AddCollaboratorToProject service' do
+describe 'Test AddCollaboratorToPdf service' do
   before do
     wipe_database
 
@@ -21,7 +21,7 @@ describe 'Test AddCollaboratorToProject service' do
 
   it 'HAPPY: should be able to add a collaborator to a pdf' do
     CoEditPDF::AddCollaboratorToPdf.call(
-      collaborator_id: @collaborator.id,
+      collaborator_email: @collaborator.email,
       pdf_id: @pdf.id
     )
 
@@ -32,9 +32,9 @@ describe 'Test AddCollaboratorToProject service' do
   it 'BAD: should not add owner as a collaborator' do
     proc {
       CoEditPDF::AddCollaboratorToPdf.call(
-        collaborator_id: @owner.id,
+        collaborator_email: @owner.email,
         pdf_id: @pdf.id
       )
-    }.must_raise CoEditPDF::AddCollaboratorToPdf::OwnerNotCollaboratorError
+    }.must_raise CoEditPDF::AddCollaboratorToPdf::ForbiddenError
   end
 end

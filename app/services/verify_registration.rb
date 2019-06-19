@@ -8,8 +8,6 @@ module CoEditPDF
     # Error for invalid registration details
     class InvalidRegistration < StandardError; end
 
-    SENDGRID_URL = 'https://api.sendgrid.com/v3/mail/send'
-
     def initialize(config, registration)
       @config = config
       @registration = registration
@@ -34,7 +32,7 @@ module CoEditPDF
       verification_url = @registration[:verification_url]
 
       <<~END_EMAIL
-        <H1>Credentia Registration Received<H1>
+        <H1>CoEditPDF Registration Received<H1>
         <p>Please <a href=\"#{verification_url}\">click here</a> to validate your
         email. You will be asked to set a password to activate your account.</p>
       END_EMAIL
@@ -45,13 +43,13 @@ module CoEditPDF
       HTTP.auth(
         "Bearer #{@config.SENDGRID_API_KEY}"
       ).post(
-        SENDGRID_URL,
+        @config.SENDGRID_URL,
         json: {
           personalizations: [{
             to: [{ 'email' => @registration[:email] }]
           }],
-          from: { 'email' => 'noreply@credentia.com' },
-          subject: 'Credent Registration Verification',
+          from: { 'email' => 'noreply@coeditpdf.com' },
+          subject: 'CoEditPdf Registration Verification',
           content: [
             { type: 'text/html',
               value: email_body }
