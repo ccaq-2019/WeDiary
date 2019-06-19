@@ -60,7 +60,8 @@ module CoEditPDF
         type: 'pdf',
         attributes: {
           id: id,
-          filename: filename
+          filename: filename,
+          content: content
         }
       }
     end

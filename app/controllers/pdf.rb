@@ -78,7 +78,7 @@ module CoEditPDF
       routing.post do
         new_data = JSON.parse(routing.body.read)
         new_pdf = CreatePdfForOwner.call(
-          owner_name: @auth_account['name'],
+          account: @auth_account,
           pdf_data: new_data
         )
 
