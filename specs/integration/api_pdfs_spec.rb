@@ -51,9 +51,9 @@ describe 'Test PDF Document Handling' do
       _(last_response.status).must_equal 200
 
       result = JSON.parse last_response.body
-
       _(result['data']['attributes']['id']).must_equal pdf.id
       _(result['data']['attributes']['filename']).must_equal pdf.filename
+      _(result['data']['attributes']['content']).must_equal pdf.content
     end
 
     it 'SAD: should return error if unknown pdf requested' do

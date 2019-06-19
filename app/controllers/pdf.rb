@@ -77,7 +77,11 @@ module CoEditPDF
       # POST api/v1/pdfs
       routing.post do
         new_data = JSON.parse(routing.body.read)
-        new_pdf = @auth_account.add_owned_pdf(new_data)
+        new_pdf = CreatePdfForOwner.call(
+          account: @auth_account,
+          pdf_data: new_data
+        )
+
         raise 'Could not save pdf' unless new_pdf
 
         response.status = 201

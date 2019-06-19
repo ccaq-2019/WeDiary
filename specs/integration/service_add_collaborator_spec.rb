@@ -15,7 +15,7 @@ describe 'Test AddCollaboratorToPdf service' do
     @owner = CoEditPDF::Account.all[0]
     @collaborator = CoEditPDF::Account.all[1]
     @pdf = CoEditPDF::CreatePdfForOwner.call(
-      owner_name: @owner.name, pdf_data: pdf_data
+      account: @owner, pdf_data: pdf_data
     )
   end
 
