@@ -55,6 +55,14 @@ module CoEditPDF
       self.filename_digest = SecureDB.digest(plaintext)
     end
 
+    def content
+      SecureDB.decrypt(content_secure)
+    end
+
+    def content=(plaintext)
+      self.content_secure = SecureDB.encrypt(plaintext)
+    end
+
     def to_h(all = true)
       {
         type: 'pdf',
