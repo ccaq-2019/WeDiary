@@ -10,7 +10,7 @@ Sequel.migration do
 
       String :filename_secure, null: false
       String :filename_digest, null: false
-      String :content
+      String :content_secure
 
       DateTime :created_at
       DateTime :updated_at
