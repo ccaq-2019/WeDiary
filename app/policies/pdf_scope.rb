@@ -45,7 +45,9 @@ module CoEditPDF
       end
 
       def get_all_pdfs_detail(pdfs)
-        pdfs.map(&:full_details)
+        pdfs.map do |pdf|
+          pdf.full_details(all: false)
+        end
       end
 
       def includes_collaborator?(pdf, account)

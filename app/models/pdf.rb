@@ -55,19 +55,19 @@ module CoEditPDF
       self.filename_digest = SecureDB.digest(plaintext)
     end
 
-    def to_h
+    def to_h(all = true)
       {
         type: 'pdf',
         attributes: {
           id: id,
           filename: filename,
-          content: content
+          content: all ? content : nil
         }
       }
     end
 
-    def full_details
-      to_h.merge(
+    def full_details(all = true)
+      to_h(all).merge(
         relationships: {
           owner: owner,
           collaborators: collaborators
