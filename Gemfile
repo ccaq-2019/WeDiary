@@ -21,6 +21,9 @@ gem 'rack-test'
 gem 'hirb'
 gem 'sequel'
 
+# PDF
+gem 'hexapdf'
+
 # External Services
 gem 'http'
 

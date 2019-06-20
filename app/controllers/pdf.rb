@@ -46,6 +46,20 @@ module CoEditPDF
           end
         end
 
+        routing.on 'edit' do
+          routing.put do
+            req_data = JSON.parse(routing.body.read)
+            edited_pdf = PutPdf.call(
+              account: @auth_account,
+              pdf_id: pdf_id,
+              edit_data: req_data['edit_data']
+            )
+
+            { message: "Modification to #{edited_pdf.filename} was added",
+              data: edited_pdf }.to_json
+          end
+        end
+
         # GET api/v1/pdfs/[pdf_id]
         routing.get do
           pdf = Pdf.first(id: pdf_id)
