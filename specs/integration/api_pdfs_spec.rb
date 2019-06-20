@@ -53,7 +53,6 @@ describe 'Test PDF Document Handling' do
       result = JSON.parse last_response.body
       _(result['data']['attributes']['id']).must_equal pdf.id
       _(result['data']['attributes']['filename']).must_equal pdf.filename
-      _(result['data']['attributes']['content']).must_equal pdf.content
     end
 
     it 'SAD: should return error if unknown pdf requested' do
@@ -102,6 +101,32 @@ describe 'Test PDF Document Handling' do
 
       _(last_response.status).must_equal 400
       _(last_response.header['Location']).must_be_nil
+    end
+  end
+
+  describe 'Deleting PDF Documents' do
+    before do
+      @account.add_owned_pdf(DATA[:pdfs][0])
+    end
+
+    it 'HAPPY: should be able to delete PDF with valid auth token' do
+      header 'Authorization', auth_header(@account_data)
+      delete "api/v1/pdfs/#{@account.owned_pdfs.first.id}"
+
+      _(last_response.status).must_equal 200
+
+      deleted = JSON.parse(last_response.body)['data']['attributes']
+
+      _(deleted['filename']).must_equal DATA[:pdfs][0]['filename']
+    end
+
+    it 'BAD: should not delete PDF without authorization' do
+      delete "api/v1/pdfs/#{@account.owned_pdfs.first.id}"
+
+      deleted = JSON.parse(last_response.body)['data']
+
+      _(last_response.status).must_equal 403
+      _(deleted).must_be_nil
     end
   end
 end
