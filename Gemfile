@@ -17,6 +17,9 @@ gem 'rake'
 gem 'pry'
 gem 'rack-test'
 
+# Test Coverage
+gem 'simplecov'
+
 # Database
 gem 'hirb'
 gem 'sequel'

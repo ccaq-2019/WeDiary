@@ -2,3 +2,5 @@
 config/secrets.yml
 app/db/store/*
 .rake_tasks~
+coverage/*
+!coverage/.resultset.json
