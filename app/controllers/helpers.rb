@@ -7,15 +7,17 @@ module CoEditPDF
       routing.scheme.casecmp(Api.config.SECURE_SCHEME).zero?
     end
 
-    # Returns {:id, :name, :email }
-    def authenticated_account(headers)
+    def authorization(headers)
       return nil unless headers['Authorization']
 
       scheme, auth_token = headers['Authorization'].split(' ')
       return nil unless scheme.match?(/^Bearer$/i)
 
-      account_payload = AuthToken.payload(auth_token)
-      Account.first(name: account_payload['attributes']['name'])
+      contents = AuthToken.contents(auth_token)
+      account_data = contents['payload']['attributes']
+
+      { account: Account.first(name: account_data['name']),
+        scope: AuthScope.new(contents['scope']) }
     end
   end
 end

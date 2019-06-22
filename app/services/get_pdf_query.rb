@@ -17,10 +17,10 @@ module CoEditPDF
       end
     end
 
-    def self.call(account:, pdf:)
+    def self.call(auth:, pdf:)
       raise NotFoundError unless pdf
 
-      policy = PdfPolicy.new(account, pdf)
+      policy = PdfPolicy.new(auth[:account], pdf, auth[:scope])
       raise ForbiddenError unless policy.can_view?
 
       pdf.full_details.merge(policies: policy.summary)

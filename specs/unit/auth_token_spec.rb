@@ -7,23 +7,23 @@ describe 'Test Auth Token' do
     @payload = { name: 'Angels', email: 'angels@mlb.com' }
   end
 
-  it 'should return the correct payload' do
+  it 'should return the correct contents' do
     token = AuthToken.create(@payload)
-    payload = AuthToken.payload(token)
+    contents = AuthToken.contents(token)
 
-    _(payload.to_json).must_equal @payload.to_json
+    _(contents['payload'].to_json).must_equal @payload.to_json
   end
 
   it 'should raise ExpiredTokenError if the token is expired' do
-    token = AuthToken.create(@payload, 0)
+    token = AuthToken.create(@payload, AuthScope.new, 0)
     proc {
-      AuthToken.payload(token)
+      AuthToken.contents(token)
     }.must_raise AuthToken::ExpiredTokenError
   end
 
   it 'should raise InvalidTokenError if the token is invalid' do
     proc {
-      AuthToken.payload('fake_token')
+      AuthToken.contents('fake_token')
     }.must_raise AuthToken::InvalidTokenError
   end
 end

@@ -15,9 +15,11 @@ describe 'Test Pdfs Handling' do
 
   it 'HAPPY: should retrieve correct data from database' do
     pdf_data = DATA[:pdfs][1]
+    owner_data = DATA[:accounts][0]
+    auth = authorization(owner_data)
     account = CoEditPDF::Account.first
     new_pdf = CoEditPDF::CreatePdfForOwner.call(
-      account: account, pdf_data: pdf_data
+      auth: auth, pdf_data: pdf_data
     )
 
     pdf = CoEditPDF::Pdf.find(id: new_pdf.id)
@@ -26,9 +28,11 @@ describe 'Test Pdfs Handling' do
 
   it 'SECURITY: should not use deterministic integers' do
     pdf_data = DATA[:pdfs][1]
+    owner_data = DATA[:accounts][0]
+    auth = authorization(owner_data)
     account = CoEditPDF::Account.first
     new_pdf = CoEditPDF::CreatePdfForOwner.call(
-      account: account, pdf_data: pdf_data
+      auth: auth, pdf_data: pdf_data
     )
 
     _(new_pdf.id).wont_be_instance_of Integer
@@ -37,9 +41,11 @@ describe 'Test Pdfs Handling' do
 
   it 'SECURITY: should secure sensitive attributes' do
     pdf_data = DATA[:pdfs][1]
+    owner_data = DATA[:accounts][0]
+    auth = authorization(owner_data)
     account = CoEditPDF::Account.first
     new_pdf = CoEditPDF::CreatePdfForOwner.call(
-      account: account, pdf_data: pdf_data
+      auth: auth, pdf_data: pdf_data
     )
     stored_pdf = app.DB[:pdfs].first
 

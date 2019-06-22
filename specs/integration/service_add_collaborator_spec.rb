@@ -11,16 +11,17 @@ describe 'Test AddCollaboratorToPdf service' do
     end
 
     pdf_data = DATA[:pdfs].first
-
+  
+    owner_data = DATA[:accounts][0]
     @owner = CoEditPDF::Account.all[0]
     @collaborator = CoEditPDF::Account.all[1]
-    @pdf = CoEditPDF::CreatePdfForOwner.call(
-      account: @owner, pdf_data: pdf_data
-    )
+    @pdf = @owner.add_owned_pdf(pdf_data)
+    @auth = authorization(owner_data)
   end
 
   it 'HAPPY: should be able to add a collaborator to a pdf' do
     CoEditPDF::AddCollaboratorToPdf.call(
+      auth: @auth,
       collaborator_email: @collaborator.email,
       pdf_id: @pdf.id
     )
@@ -32,6 +33,7 @@ describe 'Test AddCollaboratorToPdf service' do
   it 'BAD: should not add owner as a collaborator' do
     proc {
       CoEditPDF::AddCollaboratorToPdf.call(
+        auth: @auth,
         collaborator_email: @owner.email,
         pdf_id: @pdf.id
       )

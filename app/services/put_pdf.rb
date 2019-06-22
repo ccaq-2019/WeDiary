@@ -13,9 +13,9 @@ module CoEditPDF
       end
     end
 
-    def self.call(account:, pdf_id:, edit_data:)
+    def self.call(auth:, pdf_id:, edit_data:)
       pdf = Pdf.first(id: pdf_id)
-      policy = PdfPolicy.new(account, pdf)
+      policy = PdfPolicy.new(auth[:account], pdf, auth[:scope])
       raise ForbiddenError unless policy.can_edit?
 
       content = PdfManipulation

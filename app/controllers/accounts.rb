@@ -10,9 +10,9 @@ module CoEditPDF
 
     route('accounts') do |routing|
       @account_route = "#{@api_root}/accounts"
-
-      routing.on String do |account_id| # TODO: change id to name
-        # TODO: will this be called?
+      routing.on String do |account_id|
+        routing.halt(403, UNAUTH_MSG) unless @auth_account
+      
         # GET api/v1/accounts/[account_id]
         routing.get do
           # rubocop:disable Style/UnneededInterpolation

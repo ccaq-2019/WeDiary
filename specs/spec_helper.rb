@@ -13,13 +13,26 @@ def wipe_database
   CoEditPDF::Account.map(&:destroy)
 end
 
-def auth_header(account_data)
-  auth = CoEditPDF::AuthenticateAccount.call(
+def authenticate(account_data)
+  CoEditPDF::AuthenticateAccount.call(
     name: account_data['name'],
     password: account_data['password']
   )
+end
+
+def auth_header(account_data)
+  auth = authenticate(account_data)
 
   "Bearer #{auth[:attributes][:auth_token]}"
+end
+
+def authorization(account_data)
+  auth = authenticate(account_data)
+
+  contents = AuthToken.contents(auth[:attributes][:auth_token])
+  account = contents['payload']['attributes']
+  { account: CoEditPDF::Account.first(name: account['name']),
+    scope: AuthScope.new(contents['scope']) }
 end
 
 DATA = {} # rubocop:disable Style/MutableConstant
