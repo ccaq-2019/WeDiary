@@ -14,8 +14,9 @@ module CoEditPDF
       pdf = Pdf.first(id: pdf_id)
       collaborator = Account.first(email: collaborator_email)
 
-      policy = CollaborationRequestPolicy.new(
-        pdf, collaborator, auth[:scope])
+      policy = CollaborationRequestPolicy.new(pdf,
+                                              collaborator,
+                                              auth[:scope])
       raise ForbiddenError unless policy.can_remove?
 
       pdf.remove_collaborator(collaborator)

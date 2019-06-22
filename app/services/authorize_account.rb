@@ -10,8 +10,8 @@ module CoEditPDF
       end
     end
 
-    def self.call(auth:, id:, auth_scope:)
-      account = Account.first(id: id)
+    def self.call(auth:, name:, auth_scope:)
+      account = Account.first(name: name)
       policy = AccountPolicy.new(auth[:account], account)
 
       raise ForbiddenError unless policy.can_view?

@@ -6,21 +6,23 @@ require_relative './app'
 module CoEditPDF
   # Web controller for CoEditPDF API
   class Api < Roda
-    accounts = Account.where(id: :$find_id)
-
-    route('accounts') do |routing|
+    route('accounts') do |routing| # rubocop:disable Metrics/BlockLength
       @account_route = "#{@api_root}/accounts"
-      routing.on String do |account_id|
+      routing.on String do |account_name|
         routing.halt(403, UNAUTH_MSG) unless @auth_account
-      
-        # GET api/v1/accounts/[account_id]
+
+        # GET api/v1/accounts/[account_name]
         routing.get do
-          # rubocop:disable Style/UnneededInterpolation
-          account = accounts.call(:first, find_id: "#{account_id}")
-          # rubocop:enable Style/UnneededInterpolation
-          account ? account.to_json : raise('Account not found')
-        rescue StandardError => e
+          auth = AuthorizeAccount.call(
+            auth: @auth, name: account_name,
+            auth_scope: AuthScope.new(AuthScope::READ_ONLY)
+          )
+          { data: auth }.to_json
+        rescue AuthorizeAccount::ForbiddenError => e
           routing.halt 404, { message: e.message }.to_json
+        rescue StandardError => e
+          puts "GET ACCOUNT ERROR: #{e.inspect}"
+          routing.halt 500, { message: 'API Server Error' }.to_json
         end
       end
 

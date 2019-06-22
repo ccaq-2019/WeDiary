@@ -17,7 +17,6 @@ describe 'Test Pdfs Handling' do
     pdf_data = DATA[:pdfs][1]
     owner_data = DATA[:accounts][0]
     auth = authorization(owner_data)
-    account = CoEditPDF::Account.first
     new_pdf = CoEditPDF::CreatePdfForOwner.call(
       auth: auth, pdf_data: pdf_data
     )
@@ -30,7 +29,6 @@ describe 'Test Pdfs Handling' do
     pdf_data = DATA[:pdfs][1]
     owner_data = DATA[:accounts][0]
     auth = authorization(owner_data)
-    account = CoEditPDF::Account.first
     new_pdf = CoEditPDF::CreatePdfForOwner.call(
       auth: auth, pdf_data: pdf_data
     )
@@ -43,7 +41,6 @@ describe 'Test Pdfs Handling' do
     pdf_data = DATA[:pdfs][1]
     owner_data = DATA[:accounts][0]
     auth = authorization(owner_data)
-    account = CoEditPDF::Account.first
     new_pdf = CoEditPDF::CreatePdfForOwner.call(
       auth: auth, pdf_data: pdf_data
     )

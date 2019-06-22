@@ -11,7 +11,7 @@ describe 'Test AddCollaboratorToPdf service' do
     end
 
     pdf_data = DATA[:pdfs].first
-  
+
     owner_data = DATA[:accounts][0]
     @owner = CoEditPDF::Account.all[0]
     @collaborator = CoEditPDF::Account.all[1]

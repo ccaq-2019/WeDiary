@@ -61,7 +61,7 @@ module CoEditPDF
     end
 
     private
-    
+
     def can_read?
       @auth_scope ? @auth_scope.can_read?('projects') : false
     end
