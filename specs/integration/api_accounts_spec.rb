@@ -16,23 +16,24 @@ describe 'Test Account Handling' do
       account = CoEditPDF::Account.create(account_data)
 
       header 'Authorization', auth_header(account_data)
-      get "/api/v1/accounts/#{account.id}"
+      get "/api/v1/accounts/#{account.name}"
       _(last_response.status).must_equal 200
 
-      result = JSON.parse last_response.body
-
-      _(result['attributes']['id']).must_equal account.id
-      _(result['attributes']['name']).must_equal account.name
-      _(result['attributes']['email']).must_equal account.email
-      _(result['attributes']['salt']).must_be_nil
-      _(result['attributes']['password']).must_be_nil
-      _(result['attributes']['password_hash']).must_be_nil
+      result = JSON.parse(last_response.body)['data']['attributes']
+      account_data = result['account']['attributes']
+      _(account_data['id']).must_equal account.id
+      _(account_data['name']).must_equal account.name
+      _(account_data['email']).must_equal account.email
+      _(account_data['salt']).must_be_nil
+      _(account_data['password']).must_be_nil
+      _(account_data['password_hash']).must_be_nil
+      _(result['auth_token']).wont_be_nil
     end
 
     it 'SAD: should return error if unknown account requested' do
       get '/api/v1/accounts/foobar'
 
-      _(last_response.status).must_equal 404
+      _(last_response.status).must_equal 403
     end
 
     it 'SECURITY: should prevent basic SQL injection targeting IDs' do
@@ -45,7 +46,7 @@ describe 'Test Account Handling' do
       get 'api/v1/accounts/2%20or%20id%3E0' # 2 or id > 0
 
       # deliberately not reporting error -- don't give attacker information
-      _(last_response.status).must_equal 404
+      _(last_response.status).must_equal 403
       _(last_response.body['id']).must_be_nil
     end
   end

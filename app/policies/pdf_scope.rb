@@ -26,13 +26,16 @@ module CoEditPDF
 
       def all_pdfs(account)
         owned_pdf_policy = if account.owned_pdfs.any?
-                             PdfPolicy.new(account, account.owned_pdfs[0])
+                             PdfPolicy.new(account,
+                                           account.owned_pdfs[0],
+                                           AuthScope.new)
                                       .summary
                            end
 
         collaborate_pdf_policy = if account.collaborations.any?
                                    PdfPolicy.new(account,
-                                                 account.collaborations[0])
+                                                 account.collaborations[0],
+                                                 AuthScope.new)
                                             .summary
                                  end
 

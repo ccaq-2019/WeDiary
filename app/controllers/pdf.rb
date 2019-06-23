@@ -7,8 +7,7 @@ module CoEditPDF
   # Web controller for CoEditPDF API
   class Api < Roda
     route('pdfs') do |routing|
-      unauthorized_message = { message: 'Unauthorized Request' }.to_json
-      routing.halt(403, unauthorized_message) unless @auth_account
+      routing.halt(403, UNAUTH_MSG) unless @auth_account
 
       @pdf_route = "#{@api_root}/pdfs"
       routing.on String do |pdf_id|
@@ -18,6 +17,7 @@ module CoEditPDF
             req_data = JSON.parse(routing.body.read)
 
             collaborator = AddCollaboratorToPdf.call(
+              auth: @auth,
               collaborator_email: req_data['collaborator_email'],
               pdf_id: pdf_id
             )
@@ -33,6 +33,7 @@ module CoEditPDF
           routing.delete do
             req_data = JSON.parse(routing.body.read)
             collaborator = RemoveCollaborator.call(
+              auth: @auth,
               collaborator_email: req_data['collaborator_email'],
               pdf_id: pdf_id
             )
@@ -50,7 +51,7 @@ module CoEditPDF
           routing.put do
             req_data = JSON.parse(routing.body.read)
             edited_pdf = PutPdf.call(
-              account: @auth_account,
+              auth: @auth,
               pdf_id: pdf_id,
               edit_data: req_data['edit_data']
             )
@@ -64,7 +65,7 @@ module CoEditPDF
         routing.get do
           pdf = Pdf.first(id: pdf_id)
           pdf = GetPdfQuery.call(
-            account: @auth_account, pdf: pdf
+            auth: @auth, pdf: pdf
           )
 
           { data: pdf }.to_json
@@ -81,7 +82,7 @@ module CoEditPDF
         routing.delete do
           pdf = Pdf.first(id: pdf_id)
           pdf = DeletePdf.call(
-            account: @auth_account, pdf: pdf
+            auth: @auth, pdf: pdf
           )
 
           { message: "#{pdf.filename} was deleted",
@@ -107,7 +108,7 @@ module CoEditPDF
       routing.post do
         new_data = JSON.parse(routing.body.read)
         new_pdf = CreatePdfForOwner.call(
-          account: @auth_account,
+          auth: @auth,
           pdf_data: new_data
         )
 
