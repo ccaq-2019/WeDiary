@@ -27,9 +27,9 @@ module CoEditPDF
 
     def self.account_and_token(account)
       {
-        type: 'authenticated_account',
+        type:       'authenticated_account',
         attributes: {
-          account: account,
+          account:    account,
           auth_token: AuthToken.create(account)
         }
       }

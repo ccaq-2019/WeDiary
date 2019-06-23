@@ -46,22 +46,28 @@ task :console => :print_env do
 end
 
 namespace :generate do
+  task(:load_libs) { require_app 'lib' }
+
   desc 'Create sample cryptographic key for database'
-  task :db_key do
-    require_app('lib')
+  task :db_key => :load_libs do
     puts "DB_KEY: #{SecureDB.generate_key}"
   end
 
   desc 'Create sample cryptographic salt for database'
-  task :db_salt do
-    require_app('lib')
+  task :db_salt => :load_libs do
     puts "DB_SALT: #{SecureDB.generate_salt}"
   end
 
   desc 'Create sample cryptographic key for tokens and messaging'
-  task :msg_key do
-    require_app('lib')
+  task :msg_key => :load_libs do
     puts "MSG_KEY: #{AuthToken.generate_key}"
+  end
+
+  desc 'Create sample sign/verify keypair for signed communication'
+  task :signing => :load_libs do
+    keypair = SignedRequest.generate_keypair
+    puts "SIGNING_KEY: #{keypair[:signing_key]}"
+    puts " VERIFY_KEY: #{keypair[:verify_key]}"
   end
 end
 

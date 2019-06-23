@@ -18,9 +18,11 @@ describe 'Test Authentication Routes' do
     end
 
     it 'HAPPY: should authenticate valid credentials' do
-      credentials = { name: @account_data['name'],
+      credentials = { name:     @account_data['name'],
                       password: @account_data['password'] }
-      post 'api/v1/auth/authenticate', credentials.to_json, @req_header
+      post 'api/v1/auth/authenticate',
+           SignedRequest.new(app.config).sign(credentials).to_json,
+           @req_header
 
       auth_account = JSON.parse(last_response.body)['data']
       account = auth_account['attributes']['account']['attributes']
@@ -31,11 +33,13 @@ describe 'Test Authentication Routes' do
     end
 
     it 'BAD: should not authenticate invalid password' do
-      credentials = { name: @account_data['name'],
+      credentials = { name:     @account_data['name'],
                       password: 'fakepassword' }
 
       assert_output(/invalid/i, '') do
-        post 'api/v1/auth/authenticate', credentials.to_json, @req_header
+        post 'api/v1/auth/authenticate',
+             SignedRequest.new(app.config).sign(credentials).to_json,
+             @req_header
       end
 
       result = JSON.parse(last_response.body)
@@ -50,9 +54,9 @@ describe 'Test Authentication Routes' do
     before do
       WebMock.enable!
       WebMock.stub_request(:get, app.config.GITHUB_ACCOUNT_URL)
-             .to_return(body: GH_ACCOUNT_RESPONSE[GOOD_GH_ACCESS_TOKEN],
-                        status: 200,
-                        headers: { 'content-type' => 'application/json' })
+        .to_return(body:    GH_ACCOUNT_RESPONSE[GOOD_GH_ACCESS_TOKEN],
+                   status:  200,
+                   headers: { 'content-type' => 'application/json' })
     end
 
     after do
@@ -62,7 +66,9 @@ describe 'Test Authentication Routes' do
     it 'HAPPY AUTH SSO: should authenticate+authorize new valid SSO account' do
       gh_access_token = { access_token: GOOD_GH_ACCESS_TOKEN }
 
-      post 'api/v1/auth/sso', gh_access_token.to_json, @req_header
+      post 'api/v1/auth/sso',
+           SignedRequest.new(app.config).sign(gh_access_token).to_json,
+           @req_header
 
       auth_account = JSON.parse(last_response.body)['data']
       account = auth_account['attributes']['account']['attributes']
@@ -75,12 +81,14 @@ describe 'Test Authentication Routes' do
 
     it 'HAPPY AUTH SSO: should authorize existing SSO account' do
       CoEditPDF::Account.create(
-        name: SSO_ACCOUNT['sso_username'],
+        name:  SSO_ACCOUNT['sso_username'],
         email: SSO_ACCOUNT['email']
       )
 
       gh_access_token = { access_token: GOOD_GH_ACCESS_TOKEN }
-      post 'api/v1/auth/sso', gh_access_token.to_json, @req_header
+      post 'api/v1/auth/sso',
+           SignedRequest.new(app.config).sign(gh_access_token).to_json,
+           @req_header
 
       auth_account = JSON.parse(last_response.body)['data']
       account = auth_account['attributes']['account']['attributes']

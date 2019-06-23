@@ -19,9 +19,9 @@ module CoEditPDF
       raise ForbiddenError unless policy.can_edit?
 
       content = PdfManipulation
-                .new(pdf.id, pdf.content)
-                .add_text(edit_data['text'], edit_data['x'], edit_data['y'])
-                .content_base64
+        .new(pdf.id, pdf.content)
+        .add_text(edit_data)
+        .content_base64
 
       pdf.update(content: content)
       pdf

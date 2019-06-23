@@ -21,9 +21,9 @@ describe 'Test AddCollaboratorToPdf service' do
 
   it 'HAPPY: should be able to add a collaborator to a pdf' do
     CoEditPDF::AddCollaboratorToPdf.call(
-      auth: @auth,
+      auth:               @auth,
       collaborator_email: @collaborator.email,
-      pdf_id: @pdf.id
+      pdf_id:             @pdf.id
     )
 
     _(@collaborator.collaborations.count).must_equal 1
@@ -33,9 +33,9 @@ describe 'Test AddCollaboratorToPdf service' do
   it 'BAD: should not add owner as a collaborator' do
     proc {
       CoEditPDF::AddCollaboratorToPdf.call(
-        auth: @auth,
+        auth:               @auth,
         collaborator_email: @owner.email,
-        pdf_id: @pdf.id
+        pdf_id:             @pdf.id
       )
     }.must_raise CoEditPDF::AddCollaboratorToPdf::ForbiddenError
   end

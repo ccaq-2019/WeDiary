@@ -17,7 +17,7 @@ module CoEditPDF
       account_data = contents['payload']['attributes']
 
       { account: Account.first(name: account_data['name']),
-        scope: AuthScope.new(contents['scope']) }
+        scope:   AuthScope.new(contents['scope']) }
     end
   end
 end

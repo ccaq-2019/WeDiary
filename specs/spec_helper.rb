@@ -18,7 +18,7 @@ end
 
 def authenticate(account_data)
   CoEditPDF::AuthenticateAccount.call(
-    name: account_data['name'],
+    name:     account_data['name'],
     password: account_data['password']
   )
 end
@@ -35,7 +35,7 @@ def authorization(account_data)
   contents = AuthToken.contents(auth[:attributes][:auth_token])
   account = contents['payload']['attributes']
   { account: CoEditPDF::Account.first(name: account['name']),
-    scope: AuthScope.new(contents['scope']) }
+    scope:   AuthScope.new(contents['scope']) }
 end
 
 DATA = {} # rubocop:disable Style/MutableConstant

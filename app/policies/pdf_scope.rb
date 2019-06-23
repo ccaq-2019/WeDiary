@@ -29,20 +29,20 @@ module CoEditPDF
                              PdfPolicy.new(account,
                                            account.owned_pdfs[0],
                                            AuthScope.new)
-                                      .summary
+                               .summary
                            end
 
         collaborate_pdf_policy = if account.collaborations.any?
                                    PdfPolicy.new(account,
                                                  account.collaborations[0],
                                                  AuthScope.new)
-                                            .summary
+                                     .summary
                                  end
 
         {
-          owned: { pdfs: get_all_pdfs_detail(account.owned_pdfs),
-                   policy: owned_pdf_policy },
-          collaborate: { pdfs: get_all_pdfs_detail(account.collaborations),
+          owned:       { pdfs:   get_all_pdfs_detail(account.owned_pdfs),
+                         policy: owned_pdf_policy },
+          collaborate: { pdfs:   get_all_pdfs_detail(account.collaborations),
                          policy: collaborate_pdf_policy }
         }
       end
