@@ -11,12 +11,13 @@ class PdfManipulation
     @document = HexaPDF::Document.open("#{@id}.pdf")
   end
 
-  def add_text(text, pos_x, pos_y)
+  def add_text(edit_data)
     page = @document.pages[0]
     height = page.box.height.round
     canvas = page.canvas(type: :overlay)
     canvas.font('Helvetica', size: 15)
-    canvas.text(text, at: [pos_x.to_i, height - pos_y.to_i])
+    canvas.text(edit_data['text'],
+                at: [edit_data['x'].to_i, height - edit_data['y'].to_i])
     self
   end
 

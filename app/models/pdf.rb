@@ -65,11 +65,11 @@ module CoEditPDF
 
     def to_h(all = true)
       {
-        type: 'pdf',
+        type:       'pdf',
         attributes: {
-          id: id,
+          id:       id,
           filename: filename,
-          content: all ? content : nil
+          content:  all ? content : nil
         }
       }
     end
@@ -77,7 +77,7 @@ module CoEditPDF
     def full_details(all = true)
       to_h(all).merge(
         relationships: {
-          owner: owner,
+          owner:         owner,
           collaborators: collaborators
         }
       )

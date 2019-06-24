@@ -39,7 +39,7 @@ module CoEditPDF
                  left_key: :collaborator_id, right_key: :pdf_id
 
     plugin :association_dependencies,
-           owned_pdfs: :destroy,
+           owned_pdfs:     :destroy,
            collaborations: :nullify
 
     plugin :uuid, field: :id
@@ -48,7 +48,7 @@ module CoEditPDF
     set_allowed_columns :name, :email, :password
 
     def self.create_github_account(github_account)
-      create(name: github_account[:username],
+      create(name:  github_account[:username],
              email: github_account[:email])
     end
 
@@ -74,14 +74,18 @@ module CoEditPDF
     def to_json(options = {})
       JSON(
         {
-          type: 'account',
-          attributes: {
-            id: id,
-            name: name,
-            email: email
-          }
+          type:       'account',
+          attributes: public_attributes_hash
         }, options
       )
+    end
+
+    def public_attributes_hash
+      {
+        id:    id,
+        name:  name,
+        email: email
+      }
     end
   end
 end

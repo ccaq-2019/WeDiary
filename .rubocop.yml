@@ -7,7 +7,15 @@ AllCops:
 
 # Layout/EndOfLine:
 #   Enabled: false
-  
+
+Layout/AlignHash:
+  Enabled: true
+  EnforcedColonStyle: table
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: true
+  EnforcedStyle: indented
+
 Metrics/BlockLength:
   Enabled: true
   Exclude:

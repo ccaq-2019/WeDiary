@@ -17,9 +17,9 @@ module CoEditPDF
             req_data = JSON.parse(routing.body.read)
 
             collaborator = AddCollaboratorToPdf.call(
-              auth: @auth,
+              auth:               @auth,
               collaborator_email: req_data['collaborator_email'],
-              pdf_id: pdf_id
+              pdf_id:             pdf_id
             )
 
             { data: collaborator }.to_json
@@ -33,13 +33,13 @@ module CoEditPDF
           routing.delete do
             req_data = JSON.parse(routing.body.read)
             collaborator = RemoveCollaborator.call(
-              auth: @auth,
+              auth:               @auth,
               collaborator_email: req_data['collaborator_email'],
-              pdf_id: pdf_id
+              pdf_id:             pdf_id
             )
 
             { message: "#{collaborator.name} removed from pdf",
-              data: collaborator }.to_json
+              data:    collaborator }.to_json
           rescue RemoveCollaborator::ForbiddenError => e
             routing.halt 403, { message: e.message }.to_json
           rescue StandardError
@@ -48,16 +48,17 @@ module CoEditPDF
         end
 
         routing.on 'edit' do
+          # put api/v1/pdfs/[pdf_id]/edit
           routing.put do
             req_data = JSON.parse(routing.body.read)
             edited_pdf = PutPdf.call(
-              auth: @auth,
-              pdf_id: pdf_id,
+              auth:      @auth,
+              pdf_id:    pdf_id,
               edit_data: req_data['edit_data']
             )
 
             { message: "Modification to #{edited_pdf.filename} was added",
-              data: edited_pdf }.to_json
+              data:    edited_pdf }.to_json
           end
         end
 
@@ -86,7 +87,7 @@ module CoEditPDF
           )
 
           { message: "#{pdf.filename} was deleted",
-            data: pdf }.to_json
+            data:    pdf }.to_json
         rescue DeletePdf::ForbiddenError => e
           routing.halt 403, { message: e.message }.to_json
         rescue StandardError
@@ -108,7 +109,7 @@ module CoEditPDF
       routing.post do
         new_data = JSON.parse(routing.body.read)
         new_pdf = CreatePdfForOwner.call(
-          auth: @auth,
+          auth:     @auth,
           pdf_data: new_data
         )
 
