@@ -1,8 +1,21 @@
-# WeDiary
-API to create and retrieve diary files.
-## Routes
-All routes return Json
-- GET `/`: Root route shows if Web API is running
-- GET `api/v1/diary/`: returns all confiugration IDs
-- GET `api/v1/diary/[ID]`: returns details about a single diary with given ID
-- POST `api/v1/diary/`: creates a new diary
+# CoEditPDF-api
+API for CoEditPDF application.
+## Run
+1. Clone this repository
+```
+git clone https://github.com/ccaq-2019/CoEditPDF-api.git
+cd CoEditPDF-api
+```
+2. Install the dependencies (except for pg)
+```
+bundle install --without production
+```
+3. Copy and rename `config/secrets.example.yml` to `config/secrets.yml` and set all the config variables.
+4. Setup the database
+```
+rake db:migrate
+```
+5. Run the API on localhost
+```
+rake run:dev
+```
